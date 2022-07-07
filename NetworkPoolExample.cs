@@ -3,6 +3,9 @@ using FishNet;
 using FishNet.Object;
 using UnityEngine;
 
+/// <summary>
+/// An example pattern for pooling Networked Objects without Despawning/Respawning, in FishNet.
+/// </summary>
 public class NetworkPoolExample : MonoBehaviour
     {
         public List<NetworkThing> RecycledThings = new List<NetworkThing>();
@@ -53,17 +56,18 @@ public class NetworkPoolExample : MonoBehaviour
             }
 
             /// <summary>
-            /// Must contain
+            /// Must contain all needed data needed to Re/Start the "Thing".
             /// </summary>
-            /// <param name="data"></param>
+            /// <param name="resetData"></param>
             [ObserversRpc]
-            public void SendReactivate(ResetData data)
+            public void SendReactivate(ResetData resetData)
             {
-                transform.position = data.position;
-                transform.rotation = data.rotation;
-
-                // Todo: Do your Cleanup(), as Awake/Start/OnStartClient/OnStartServer/etc will not be called.
-
+                // Note: Do your Cleanup() here, as Awake/Start/OnStartClient/OnStartServer/etc will not be called.
+                
+                // Apply all reset data.
+                transform.position = resetData.position;
+                transform.rotation = resetData.rotation;
+                
                 gameObject.SetActive(true);
             }
         }
