@@ -2,7 +2,7 @@ using FishNet.Object;
 using UnityEngine;
 
 /// <summary>
-/// You may copy-paste this class ad verbatim. Add to a valid GameObject, then hit play and start server and client.
+/// You may copy-paste this class ad verbatim. Add to a valid GameObject, then hit play.
 /// 
 /// Official Docs for Remote Procedure Calls:
 /// https://fish-networking.gitbook.io/docs/manual/guides/remote-procedure-calls
@@ -17,7 +17,7 @@ public class RpcExample : NetworkBehaviour
         ClientTestRpc();
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)] // Note: This allow any client from calling this. You often do not wish to do this.
     private void ClientTestRpc()
     {
         Debug.Log($"Server Received a Test RPC from {OwnerId}.");
