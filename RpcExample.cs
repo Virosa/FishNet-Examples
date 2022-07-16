@@ -1,6 +1,10 @@
 using FishNet.Object;
 using UnityEngine;
 
+/// <summary>
+/// Official Docs for Remote Procedure Calls:
+/// https://fish-networking.gitbook.io/docs/manual/guides/remote-procedure-calls
+/// </summary>
 public class RpcExample : NetworkBehaviour
 {
     public override void OnStartClient()
