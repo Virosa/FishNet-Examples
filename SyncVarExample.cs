@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Virosa {
     /// <summary>
-    /// You may copy-paste this class ad verbatim. Add to a valid GameObject, then hit play.
+    /// You may copy-paste this class ad verbatim. Add to a valid GameObject/NetworkObject, then hit play.
     /// 
     /// Official Documentation for Sync Vars:
     /// https://fish-networking.gitbook.io/docs/manual/guides/synchronizing/syncvar
