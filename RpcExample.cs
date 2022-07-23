@@ -2,7 +2,7 @@ using FishNet.Object;
 using UnityEngine;
 
 /// <summary>
-/// You may copy-paste this class ad verbatim. Add to a valid GameObject, then hit play.
+/// You may copy-paste this class ad verbatim. Add to a valid GameObject/NetworkObject, then hit play.
 /// 
 /// Official Docs for Remote Procedure Calls:
 /// https://fish-networking.gitbook.io/docs/manual/guides/remote-procedure-calls
