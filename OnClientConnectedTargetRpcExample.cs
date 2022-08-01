@@ -50,7 +50,7 @@ public class OnClientConnectedTargetRpcExample : NetworkBehaviour
         }
 
         /// <summary>
-        /// A Broadcast would work better, especially since this still assume the client is an Observer of this NetworkObject.
+        /// A Broadcast would work better, especially since this assume the client is an Observer of this NetworkObject.
         /// </summary>
         /// <param name="target"></param>
         /// <param name="number"></param>
