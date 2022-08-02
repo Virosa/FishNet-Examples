@@ -1,45 +1,56 @@
 using FishNet;
 using FishNet.Connection;
 using FishNet.Object;
-using FishNet.Transporting;
+using FishNet.Object.Synchronizing;
 using UnityEngine;
 
-public class OnClientConnectedTargetRpcExample : NetworkBehaviour
+namespace Virosa.Examples {
+    public class OnClientConnectedTargetRpcExample : NetworkBehaviour
     {
         private static int playerNumber;
 
-        // I added these, because inside a "Match" instance, you would probably do something like this.
-        private NetworkConnection player1Connection;
-        private NetworkConnection player2Connection;
+        [SerializeField] 
+        private NetworkObject playerPrefab;
+
+        private ExamplePlayer player1;
+        private ExamplePlayer player2;
+        
+        // This is only to show you can a get a client's NetworkConnection from its Object.
+        private NetworkConnection player1Connection => player1.Owner; // Will fail if player1 is null/unset.
         
         private void Awake()
         {
-            InstanceFinder.ServerManager.OnRemoteConnectionState += OnClientConnectionState;
-        }
-        
-        private void OnClientConnectionState(NetworkConnection connection, RemoteConnectionStateArgs arguments)
-        {
-            if (arguments.ConnectionState == RemoteConnectionState.Started) RegisterPlayer(connection);
+            InstanceFinder.SceneManager.OnClientLoadedStartScenes += OnClientReady;
         }
 
-        private void RegisterPlayer(NetworkConnection connection)
+        private void OnClientReady(NetworkConnection connection, bool asServer)
+        {
+            if (!asServer) return;
+
+            SpawnAndRegisterPlayer(connection);
+        }
+        
+        private void SpawnAndRegisterPlayer(NetworkConnection connection)
         {
             var nextPlayerNumber = GetNextPlayerNumber();
 
-            switch (nextPlayerNumber)
+            NetworkObject newPlayerNetworkObject = Instantiate(playerPrefab);
+            ExamplePlayer newPlayer = newPlayerNetworkObject.GetComponent<ExamplePlayer>();
+
+            // Set the player's number before Spawning.
+            newPlayer.playerNumber = nextPlayerNumber;
+            
+            Spawn(newPlayerNetworkObject.gameObject);
+            
+            // In a typical "Match" class, you often want to keep a reference to the player's "main" object. You may want to use an array instead.
+            switch (playerNumber)
             {
                 case 1:
-                    player1Connection = connection;
-                    SendPlayerNumber(connection, 1);
+                    player1 = newPlayer;
                     break;
                 
                 case 2:
-                    player2Connection = connection;
-                    SendPlayerNumber(connection, 2);
-                    break;
-                
-                default:
-                    SendNoGameForYou(connection);
+                    player2 = newPlayer;
                     break;
             }
         }
@@ -48,21 +59,29 @@ public class OnClientConnectedTargetRpcExample : NetworkBehaviour
         {
             return ++playerNumber;
         }
+    }
 
-        /// <summary>
-        /// A Broadcast would work better, especially since this assume the client is an Observer of this NetworkObject.
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="number"></param>
-        [TargetRpc]
-        private void SendPlayerNumber(NetworkConnection target, int number)
-        {
-            Debug.Log($"Server sent us our Player Number: {number}.");
-        }
+    public class ExamplePlayer : NetworkBehaviour
+    {
+        // If set on the Server before Spawning, is Guaranteed to be available by OnStartClient()
+        [SyncVar] 
+        public int playerNumber;
 
-        [TargetRpc]
-        private void SendNoGameForYou(NetworkConnection target)
+        public override void OnStartClient()
         {
-            Debug.Log($"From Server: Computer says noooo.");
+            base.OnStartClient();
+
+            switch (playerNumber)
+            {
+                case 1:
+                case 2:
+                    Debug.Log($"Yay we can play! We are Player {playerNumber}!");
+                    break;
+                
+                default:
+                    Debug.LogWarning($"We can't play, we are Player {playerNumber}. :(");
+                    break;
+            }
         }
     }
+}
