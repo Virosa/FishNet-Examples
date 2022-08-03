@@ -2,4 +2,4 @@
 Official Examples are here:
 https://github.com/FirstGearGames/FishNet-Examples/
 
-Disclaimer: Use my code at your own risk and discretion. Most likely some of it may be really bad convention. At the very least, take my examples with a grain of salt.
+Disclaimer: Use my code at your own risk and discretion. Some of the code may be outright bad, some may be pretty good. Don't forget a grain of salt.
